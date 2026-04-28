@@ -1,0 +1,102 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                    TEXTEXTRACT PROJECT STRUCTURE                  ║
+║                   RAG (Retrieval Augmented Generation)             ║
+╚════════════════════════════════════════════════════════════════════╝
+
+📦 TextExtract/
+│
+├─ 📂 data/                     ← ALL DATA FILES
+│  ├─ 📁 pdfs/                  [STEP 1] Place 15 PDFs here
+│  ├─ 📁 raw/                   [STEP 2] Extracted JSON/CSV
+│  │  ├─ curriculum_chunks.json (5000+ text chunks)
+│  │  └─ curriculum_paths.csv
+│  └─ 📁 processed/             [STEP 3] Ready for RAG/ML
+│     ├─ rag_knowledge_base.csv  ← Main knowledge base
+│     ├─ question_bank.csv
+│     ├─ dataset_*.csv (7 files)
+│     └─ student_*.csv (2 files)
+│
+├─ 📂 src/                      ← SOURCE CODE (organized by task)
+│  ├─ 📁 pipeline/              Extract & process PDFs
+│  │  ├─ extract_curriculum.py   (PDFs → chunks)
+│  │  ├─ json_to_csv.py          (JSON → CSV)
+│  │  └─ create_rag_tutor_data.py (tutor data)
+│  │
+│  ├─ 📁 embeddings/             Search & vector DB
+│  │  ├─ build_vector_db.py      (Create embeddings)
+│  │  └─ search_vector_db.py     (Search chunks)
+│  │
+│  ├─ 📁 ml/                    Machine Learning
+│  │  ├─ create_labeled_datasets.py
+│  │  ├─ create_proper_ml_datasets.py
+│  │  └─ create_training_csv.py
+│  │
+│  └─ 📁 rag/                   RAG Chatbot
+│     ├─ working_rag_system.py  (Full RAG)
+│     └─ rag_tutor_implementation.py
+│
+├─ 📂 db/                       ← VECTOR DATABASE
+│  └─ 📁 chroma_db/             (Auto-generated embeddings)
+│
+├─ 📂 docs/                     ← DOCUMENTATION
+│  ├─ README.md                 ← START HERE!
+│  ├─ QUICKSTART.md
+│  ├─ FOLDER_STRUCTURE.md       (This guide)
+│  ├─ COMPLETE_ARCHITECTURE.md
+│  ├─ RAG_WORKING_PROOF.md
+│  └─ ... (more guides)
+│
+├─ 📄 README.md                 ← Main documentation
+├─ 📄 FOLDER_STRUCTURE.md       ← Folder guide
+├─ 📄 requirements.txt          ← Python packages
+└─ 📄 .gitignore               ← Git rules
+
+════════════════════════════════════════════════════════════════════
+
+PIPELINE STEPS:
+
+1️⃣  PDFs in data/pdfs/
+     ↓
+2️⃣  python src/pipeline/extract_curriculum.py
+     ↓ Output: data/raw/curriculum_chunks.json
+3️⃣  python src/embeddings/build_vector_db.py
+     ↓ Output: db/chroma_db/ (vector embeddings)
+4️⃣  python src/embeddings/search_vector_db.py
+     ↓ Interactive search mode
+5️⃣  python src/rag/working_rag_system.py
+     ↓ Full RAG chatbot
+
+════════════════════════════════════════════════════════════════════
+
+KEY IMPROVEMENTS:
+
+✅ Clear organization: Each folder has ONE purpose
+✅ Easy to understand: Self-explanatory names
+✅ Scalable: Easy to add new modules
+✅ Collaborative: Others instantly understand structure
+✅ Documented: README + guides included
+
+════════════════════════════════════════════════════════════════════
+
+QUICK REFERENCE:
+
+Need to...                          Go to...
+─────────────────────────────────────────────────────────────────
+Add PDFs                            data/pdfs/
+Find extracted chunks               data/raw/
+Find processed data                 data/processed/
+Extract text from PDFs              src/pipeline/extract_curriculum.py
+Create embeddings                   src/embeddings/build_vector_db.py
+Search chunks                       src/embeddings/search_vector_db.py
+Use RAG chatbot                     src/rag/working_rag_system.py
+Understand architecture             docs/COMPLETE_ARCHITECTURE.md
+Get started quickly                 docs/QUICKSTART.md
+
+════════════════════════════════════════════════════════════════════
+
+STATUS: ✅ RESTRUCTURING COMPLETE!
+
+The folder is now clean, organized, and easy for anyone to understand.
+Start with: README.md or FOLDER_STRUCTURE.md
+
+════════════════════════════════════════════════════════════════════

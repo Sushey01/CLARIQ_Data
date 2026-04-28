@@ -1,0 +1,5 @@
+path_id,topic_name,description,order,prerequisite_topics,estimated_hours,target_difficulty,required_accuracy_percent
+PATH001,Understanding Light,"Learn about light, refraction, and lenses",1,None,4,easy,80
+PATH002,The Human Eye,Learn about eye anatomy and how vision works,2,Understanding Light,3,medium,75
+PATH003,Vision Defects and Corrections,Learn about common vision problems and corrections,3,"The Human Eye, Understanding Light",3,medium,75
+PATH004,Advanced Optics,Advanced concepts in light and vision,4,Vision Defects and Corrections,5,hard,85

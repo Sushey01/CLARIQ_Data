@@ -1,0 +1,133 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║              TEXTEXTRACT - QUICK REFERENCE CARD                  ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+📍 WHERE ARE MY FILES?
+
+PDFs (your input)                → data/pdfs/
+Extracted chunks (JSON)          → data/raw/curriculum_chunks.json
+Knowledge base (CSV)             → data/processed/rag_knowledge_base.csv
+All datasets                     → data/processed/
+Vector database (embeddings)     → db/chroma_db/
+Python scripts                   → src/
+
+─────────────────────────────────────────────────────────────────
+
+🚀 HOW TO RUN THE PIPELINE
+
+Step 1: Extract text from PDFs
+  $ python src/pipeline/extract_curriculum.py
+  
+Step 2: Create embeddings
+  $ python src/embeddings/build_vector_db.py
+  
+Step 3: Search (interactive)
+  $ python src/embeddings/search_vector_db.py
+  
+Step 4: Run full RAG system
+  $ python src/rag/working_rag_system.py
+
+─────────────────────────────────────────────────────────────────
+
+📚 SCRIPT PURPOSES
+
+PIPELINE (data extraction & processing):
+  • extract_curriculum.py       → PDFs → JSON chunks
+  • json_to_csv.py             → JSON → CSV
+  • create_rag_tutor_data.py   → Prepare tutor data
+
+EMBEDDINGS (vector search):
+  • build_vector_db.py         → Create vector database
+  • search_vector_db.py        → Search similar chunks
+
+ML (machine learning datasets):
+  • create_labeled_datasets.py         → Labeled data
+  • create_proper_ml_datasets.py       → ML formats
+  • create_training_csv.py             → Training data
+
+RAG (retrieval-augmented generation):
+  • working_rag_system.py              → Full RAG chatbot
+  • rag_tutor_implementation.py        → Tutor features
+
+─────────────────────────────────────────────────────────────────
+
+🗂️ FOLDER GUIDE
+
+data/
+  pdfs/           ← PUT YOUR 15 PDFs HERE
+  raw/            ← Extracted JSON & CSV (Step 1 output)
+  processed/      ← Ready-to-use datasets (Step 2-3 output)
+
+src/
+  pipeline/       ← Extract & process PDFs
+  embeddings/     ← Create embeddings & search
+  ml/             ← Machine learning datasets
+  rag/            ← RAG chatbot implementation
+
+db/
+  chroma_db/      ← Vector database (auto-created)
+
+docs/
+  README.md       ← Full documentation
+  QUICKSTART.md   ← 5-minute start
+  ...             ← More guides
+
+─────────────────────────────────────────────────────────────────
+
+❓ COMMON QUESTIONS
+
+Q: Where do I put my PDFs?
+A: Create pdf files in data/pdfs/ folder
+
+Q: How do I extract text from PDFs?
+A: python src/pipeline/extract_curriculum.py
+
+Q: Where is the knowledge base?
+A: data/processed/rag_knowledge_base.csv
+
+Q: How do I search the database?
+A: python src/embeddings/search_vector_db.py
+
+Q: How do I run the RAG chatbot?
+A: python src/rag/working_rag_system.py
+
+Q: What is the Vector DB?
+A: db/chroma_db/ - stores embeddings for fast search
+
+Q: Do I need to understand all this?
+A: No! Just follow the 4 steps in "HOW TO RUN"
+
+─────────────────────────────────────────────────────────────────
+
+✅ WHAT'S ALREADY DONE
+
+✓ Extract text from PDFs
+✓ Break into chunks (~150 words each)
+✓ Store in CSV format
+✓ Create embeddings (SentenceTransformers)
+✓ Build vector database (Chroma)
+✓ Implement search functionality
+✓ RAG chatbot ready
+
+─────────────────────────────────────────────────────────────────
+
+📖 LEARN MORE
+
+README.md           ← Start here for full documentation
+FOLDER_STRUCTURE.md ← Understand folder organization
+STRUCTURE_SUMMARY.txt ← Visual guide
+docs/               ← Additional guides & architecture
+
+─────────────────────────────────────────────────────────────────
+
+💡 PRO TIPS
+
+• Run from project root, not from inside src/
+• PDFs must be in data/pdfs/
+• Vector DB created automatically (don't edit it!)
+• Each script is independent - can run separately
+• All imports updated for new folder structure
+
+═══════════════════════════════════════════════════════════════════
+Status: ✅ Project restructured and ready to use!
+═══════════════════════════════════════════════════════════════════
