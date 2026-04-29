@@ -4,8 +4,12 @@ from sentence_transformers import SentenceTransformer
 import os
 from pathlib import Path
 
+# Get absolute paths based on script location
+script_dir = Path(__file__).resolve().parent
+project_root = script_dir.parent.parent
+
 # Initialize Chroma client with persistent storage
-db_dir = Path("../../db/chroma_db")
+db_dir = project_root / "db" / "chroma_db"
 db_dir.mkdir(parents=True, exist_ok=True)
 
 client = chromadb.PersistentClient(path=str(db_dir))
@@ -22,7 +26,8 @@ collection = client.get_or_create_collection(
 
 # Load curriculum chunks
 print("Loading curriculum chunks...")
-with open("../../data/raw/curriculum_chunks.json", "r") as f:
+chunks_file = project_root / "data" / "raw" / "curriculum_chunks.json"
+with open(chunks_file, "r") as f:
     chunks = json.load(f)
 
 print(f"Found {len(chunks)} chunks")
