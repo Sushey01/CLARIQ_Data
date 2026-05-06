@@ -1,6 +1,6 @@
 """
 Interactive RAG Chatbot - Ask questions and get answers!
-Uses local Ollama for LLM inference
+Uses local Ollama for LLM inference, with Gemini API fallback
 """
 
 import pandas as pd
@@ -10,16 +10,32 @@ from pathlib import Path
 import os
 import requests
 import json
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class InteractiveRAG:
     def __init__(self, ollama_model="mistral"):
-        """Initialize the RAG system with Ollama integration"""
-        print("🚀 Starting Interactive RAG Chatbot with Ollama...\n")
+        """Initialize the RAG system with Ollama integration and Gemini fallback"""
+        print("🚀 Starting Interactive RAG Chatbot...\n")
         
         # Ollama configuration
         self.ollama_url = "http://localhost:11434/api/generate"
         self.ollama_model = ollama_model
         self.ollama_available = self._check_ollama()
+        
+        # Gemini configuration (fallback)
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
+        self.gemini_available = False
+        if self.gemini_api_key:
+            try:
+                genai.configure(api_key=self.gemini_api_key)
+                self.gemini_available = True
+            except Exception as e:
+                print(f"⚠️  Gemini API configuration failed: {e}")
+                print("💡 Ensure GEMINI_API_KEY is set correctly")
         
         # Load knowledge base
         kb_path = os.path.join(os.path.dirname(__file__), '../../data/processed/rag_knowledge_base.csv')
@@ -29,8 +45,9 @@ class InteractiveRAG:
         print(f"✅ Loaded {len(self.kb)} documents from knowledge base")
         
         # Load embedding model
-        print("📚 Loading embedding model...")
+        print("📚 Loading embedding model (this may take 1-2 minutes on first run)...")
         self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        print("✅ Embedding model loaded")
         
         # Connect to Chroma database
         db_path = os.path.join(os.path.dirname(__file__), '../../db/chroma_db')
@@ -43,6 +60,8 @@ class InteractiveRAG:
         print(f"✅ Connected to {self.collection.count()} indexed documents")
         if self.ollama_available:
             print(f"✅ Ollama is running (model: {self.ollama_model})")
+        elif self.gemini_available:
+            print(f"✅ Ollama not available - using Gemini API as fallback")
         else:
             print("⚠️  Ollama not available - showing context only\n")
     
@@ -54,10 +73,10 @@ class InteractiveRAG:
         except:
             return False
     
-    def generate_answer(self, question, context_docs):
-        """Generate answer using Ollama with retrieved context"""
-        if not self.ollama_available:
-            print("⚠️  Ollama not running. Start it with: ollama serve")
+    def generate_answer_gemini(self, question, context_docs):
+        """Generate answer using Gemini API"""
+        if not self.gemini_available:
+            print("❌ Gemini API key not set. Set GEMINI_API_KEY environment variable.")
             return None
         
         # Construct prompt with context
@@ -74,32 +93,81 @@ QUESTION: {question}
 ANSWER:"""
         
         try:
-            print("\n🤖 Generating answer from Ollama...\n")
-            response = requests.post(
-                self.ollama_url,
-                json={
-                    "model": self.ollama_model,
-                    "prompt": prompt,
-                    "stream": False,
-                    "temperature": 0.7
-                },
-                timeout=120
-            )
+            print("\n🤖 Generating answer from Gemini API...\n")
             
-            if response.status_code == 200:
-                result = response.json()
-                answer = result.get("response", "").strip()
-                return answer
-            else:
-                print(f"❌ Ollama error: {response.status_code}")
-                return None
-                
-        except requests.exceptions.Timeout:
-            print("❌ Ollama request timed out. Try shorter context or check Ollama is running.")
+            # Use the best available model
+            models_to_try = ['gemini-pro', 'gemini-2.0-flash', 'gemini-2.5-flash']
+            
+            for model_name in models_to_try:
+                try:
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content(prompt)
+                    answer = response.text.strip()
+                    print(f"✅ Used model: {model_name}\n")
+                    return answer
+                except Exception as e:
+                    error_str = str(e).lower()
+                    if "not found" in error_str or "not supported" in error_str or "permission denied" in error_str:
+                        continue
+                    else:
+                        print(f"⚠️  {model_name} error: {e}")
+                        continue
+            
+            print(f"❌ No Gemini models available. Tried: {', '.join(models_to_try)}")
             return None
         except Exception as e:
-            print(f"❌ Error calling Ollama: {e}")
+            print(f"❌ Error: {e}")
             return None
+    
+    def generate_answer(self, question, context_docs):
+        """Generate answer using Ollama with retrieved context, fallback to Gemini"""
+        # Try Ollama first
+        if self.ollama_available:
+            # Construct prompt with context
+            context = "\n\n".join([doc for doc in context_docs])
+            
+            prompt = f"""You are a helpful tutor assistant. Answer the following question based ONLY on the provided context.
+If the context doesn't contain enough information, say so clearly.
+
+CONTEXT:
+{context}
+
+QUESTION: {question}
+
+ANSWER:"""
+            
+            try:
+                print("\n🤖 Generating answer from Ollama...\n")
+                response = requests.post(
+                    self.ollama_url,
+                    json={
+                        "model": self.ollama_model,
+                        "prompt": prompt,
+                        "stream": False,
+                        "temperature": 0.7
+                    },
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    answer = result.get("response", "").strip()
+                    if answer:
+                        return answer
+                
+            except Exception as e:
+                print(f"⚠️  Ollama unavailable: {e}")
+        
+        # Fallback to Gemini if Ollama failed or not available
+        if self.gemini_available:
+            print("Falling back to Gemini API...")
+            return self.generate_answer_gemini(question, context_docs)
+        
+        # No LLM available
+        if not self.ollama_available:
+            print("⚠️  Ollama not running. Start it with: ollama serve")
+        print("⚠️  No LLM backend available (set GEMINI_API_KEY to use Gemini as fallback)")
+        return None
     
     def search_and_display(self, query, top_k=5, similarity_threshold=0.25):
         """Search for relevant documents and display results"""
@@ -154,7 +222,13 @@ ANSWER:"""
     def interactive_chat(self):
         """Interactive chat mode"""
         print("\n" + "="*75)
-        print("🤖 INTERACTIVE RAG CHATBOT with OLLAMA")
+        print("🤖 INTERACTIVE RAG CHATBOT")
+        if self.ollama_available:
+            print("(Using Ollama)")
+        elif self.gemini_available:
+            print("(Using Gemini API)")
+        else:
+            print("(Context only mode)")
         print("="*75)
         print("\nCommands:")
         print("  • Type your question and press Enter")
@@ -178,7 +252,10 @@ ANSWER:"""
                     print("  • System will search and retrieve relevant content")
                     print("  • Results show similarity score (0-100%)")
                     print("  • Low scores mean topic may not be in curriculum")
-                    print("  • Ollama will generate an answer based on context")
+                    if self.ollama_available or self.gemini_available:
+                        print("  • AI will generate an answer based on context")
+                    else:
+                        print("  • No AI backend - showing context only")
                     print("  • Type 'quit' to exit\n")
                     continue
                 
