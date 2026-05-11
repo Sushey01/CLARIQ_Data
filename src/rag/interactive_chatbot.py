@@ -1,24 +1,19 @@
 """
 Interactive RAG Chatbot - Ask questions and get answers!
-Uses local Ollama for LLM inference, with Gemini API fallback
+Uses local Ollama for LLM inference
 """
 
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 import chromadb
-from pathlib import Path
 import os
 import requests
-import json
-import google.generativeai as genai
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
+from datetime import datetime
+import time
 
 class InteractiveRAG:
-    def __init__(self, ollama_model="mistral"):
-        """Initialize the RAG system with Ollama integration and Gemini fallback"""
+    def __init__(self, ollama_model="phi", student_id="anonymous"):
+        """Initialize the RAG system with Ollama"""
         print("🚀 Starting Interactive RAG Chatbot...\n")
         
         # Ollama configuration
@@ -26,16 +21,10 @@ class InteractiveRAG:
         self.ollama_model = ollama_model
         self.ollama_available = self._check_ollama()
         
-        # Gemini configuration (fallback)
-        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
-        self.gemini_available = False
-        if self.gemini_api_key:
-            try:
-                genai.configure(api_key=self.gemini_api_key)
-                self.gemini_available = True
-            except Exception as e:
-                print(f"⚠️  Gemini API configuration failed: {e}")
-                print("💡 Ensure GEMINI_API_KEY is set correctly")
+        # Student tracking for chat history
+        self.student_id = student_id
+        self.interaction_log_path = os.path.join(os.path.dirname(__file__), '../../data/processed/student_interactions.csv')
+        self.interaction_log_path = os.path.abspath(self.interaction_log_path)
         
         # Load knowledge base
         kb_path = os.path.join(os.path.dirname(__file__), '../../data/processed/rag_knowledge_base.csv')
@@ -60,23 +49,23 @@ class InteractiveRAG:
         print(f"✅ Connected to {self.collection.count()} indexed documents")
         if self.ollama_available:
             print(f"✅ Ollama is running (model: {self.ollama_model})")
-        elif self.gemini_available:
-            print(f"✅ Ollama not available - using Gemini API as fallback")
         else:
-            print("⚠️  Ollama not available - showing context only\n")
+            print("⚠️  Ollama not available - start it with: ollama serve")
+        
+        print("📊 Chat history will be saved to: student_interactions.csv\n")
     
     def _check_ollama(self):
         """Check if Ollama is running"""
         try:
             response = requests.get("http://localhost:11434/api/tags", timeout=2)
             return response.status_code == 200
-        except:
+        except Exception:
             return False
     
-    def generate_answer_gemini(self, question, context_docs):
-        """Generate answer using Gemini API"""
-        if not self.gemini_available:
-            print("❌ Gemini API key not set. Set GEMINI_API_KEY environment variable.")
+    def generate_answer(self, question, context_docs):
+        """Generate answer using Ollama with retrieved context"""
+        if not self.ollama_available:
+            print("⚠️  Ollama not running. Start it with: ollama serve")
             return None
         
         # Construct prompt with context
@@ -93,81 +82,43 @@ QUESTION: {question}
 ANSWER:"""
         
         try:
-            print("\n🤖 Generating answer from Gemini API...\n")
+            print("\n🤖 Generating answer from Ollama...")
+            print("⏳ Please wait (may take 30-60 seconds on low-memory systems)...\n")
+            response = requests.post(
+                self.ollama_url,
+                json={
+                    "model": self.ollama_model,
+                    "prompt": prompt,
+                    "stream": True,
+                    "temperature": 0.7
+                },
+                timeout=180,
+                stream=True
+            )
             
-            # Use the best available model
-            models_to_try = ['gemini-pro', 'gemini-2.0-flash', 'gemini-2.5-flash']
-            
-            for model_name in models_to_try:
-                try:
-                    model = genai.GenerativeModel(model_name)
-                    response = model.generate_content(prompt)
-                    answer = response.text.strip()
-                    print(f"✅ Used model: {model_name}\n")
+            if response.status_code == 200:
+                answer = ""
+                for line in response.iter_lines():
+                    if line:
+                        try:
+                            chunk = __import__('json').loads(line)
+                            answer += chunk.get("response", "")
+                        except:
+                            pass
+                answer = answer.strip()
+                if answer:
                     return answer
-                except Exception as e:
-                    error_str = str(e).lower()
-                    if "not found" in error_str or "not supported" in error_str or "permission denied" in error_str:
-                        continue
-                    else:
-                        print(f"⚠️  {model_name} error: {e}")
-                        continue
+                else:
+                    print("❌ No response from Ollama")
+                    return None
+            else:
+                print(f"❌ Ollama error: {response.status_code}")
+                return None
             
-            print(f"❌ No Gemini models available. Tried: {', '.join(models_to_try)}")
-            return None
         except Exception as e:
-            print(f"❌ Error: {e}")
+            print(f"❌ Error connecting to Ollama: {e}")
             return None
     
-    def generate_answer(self, question, context_docs):
-        """Generate answer using Ollama with retrieved context, fallback to Gemini"""
-        # Try Ollama first
-        if self.ollama_available:
-            # Construct prompt with context
-            context = "\n\n".join([doc for doc in context_docs])
-            
-            prompt = f"""You are a helpful tutor assistant. Answer the following question based ONLY on the provided context.
-If the context doesn't contain enough information, say so clearly.
-
-CONTEXT:
-{context}
-
-QUESTION: {question}
-
-ANSWER:"""
-            
-            try:
-                print("\n🤖 Generating answer from Ollama...\n")
-                response = requests.post(
-                    self.ollama_url,
-                    json={
-                        "model": self.ollama_model,
-                        "prompt": prompt,
-                        "stream": False,
-                        "temperature": 0.7
-                    },
-                    timeout=30
-                )
-                
-                if response.status_code == 200:
-                    result = response.json()
-                    answer = result.get("response", "").strip()
-                    if answer:
-                        return answer
-                
-            except Exception as e:
-                print(f"⚠️  Ollama unavailable: {e}")
-        
-        # Fallback to Gemini if Ollama failed or not available
-        if self.gemini_available:
-            print("Falling back to Gemini API...")
-            return self.generate_answer_gemini(question, context_docs)
-        
-        # No LLM available
-        if not self.ollama_available:
-            print("⚠️  Ollama not running. Start it with: ollama serve")
-        print("⚠️  No LLM backend available (set GEMINI_API_KEY to use Gemini as fallback)")
-        return None
     
     def search_and_display(self, query, top_k=5, similarity_threshold=0.25):
         """Search for relevant documents and display results"""
@@ -219,16 +170,45 @@ ANSWER:"""
         print("=" * 75)
         return context_docs, results
     
+    def log_interaction(self, question, answer, num_docs_found, response_time):
+        """Log student interaction to CSV for tracking and analysis"""
+        try:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            interaction_id = f"{self.student_id}_INT_{int(time.time() * 1000) % 100000}"
+            
+            # Prepare data
+            interaction_data = {
+                'interaction_id': interaction_id,
+                'student_id': self.student_id,
+                'timestamp': timestamp,
+                'question': question,
+                'num_documents_found': num_docs_found,
+                'answer': answer[:500] if answer else "No answer generated",  # First 500 chars
+                'response_time_seconds': round(response_time, 2),
+                'model_used': self.ollama_model,
+                'success': 'yes' if answer else 'no'
+            }
+            
+            # Append to CSV
+            df = pd.DataFrame([interaction_data])
+            if os.path.exists(self.interaction_log_path):
+                df.to_csv(self.interaction_log_path, mode='a', header=False, index=False)
+            else:
+                df.to_csv(self.interaction_log_path, mode='w', header=True, index=False)
+            
+            print("✅ Logged to student_interactions.csv")
+            
+        except Exception as e:
+            print(f"⚠️  Could not log interaction: {e}")
+    
     def interactive_chat(self):
         """Interactive chat mode"""
         print("\n" + "="*75)
         print("🤖 INTERACTIVE RAG CHATBOT")
         if self.ollama_available:
             print("(Using Ollama)")
-        elif self.gemini_available:
-            print("(Using Gemini API)")
         else:
-            print("(Context only mode)")
+            print("(Context only mode - Ollama not running)")
         print("="*75)
         print("\nCommands:")
         print("  • Type your question and press Enter")
@@ -252,26 +232,32 @@ ANSWER:"""
                     print("  • System will search and retrieve relevant content")
                     print("  • Results show similarity score (0-100%)")
                     print("  • Low scores mean topic may not be in curriculum")
-                    if self.ollama_available or self.gemini_available:
-                        print("  • AI will generate an answer based on context")
+                    if self.ollama_available:
+                        print("  • Ollama will generate an answer based on context")
                     else:
-                        print("  • No AI backend - showing context only")
+                        print("  • Ollama not running - showing context only")
                     print("  • Type 'quit' to exit\n")
                     continue
                 
                 print("\n🔍 Searching curriculum...\n")
+                start_time = time.time()
                 context_docs, _ = self.search_and_display(query, top_k=3)
                 
                 # Generate answer using Ollama
                 if context_docs:
                     answer = self.generate_answer(query, context_docs)
+                    response_time = time.time() - start_time
                     if answer:
                         print("\n" + "="*75)
                         print("✨ ANSWER FROM OLLAMA:\n")
                         print(answer)
                         print("\n" + "="*75 + "\n")
+                        # Log the interaction
+                        self.log_interaction(query, answer, len(context_docs), response_time)
                     else:
                         print("\n⚠️  Could not generate answer. Check Ollama status.\n")
+                        # Log failed attempt
+                        self.log_interaction(query, None, len(context_docs), response_time)
                 
             except KeyboardInterrupt:
                 print("\n\n👋 Goodbye!")
@@ -283,11 +269,12 @@ ANSWER:"""
 if __name__ == "__main__":
     import sys
     
-    # Get model name from command line args (default: mistral)
+    # Get model name and student ID from command line args
     model_name = sys.argv[1] if len(sys.argv) > 1 else "mistral"
+    student_id = sys.argv[2] if len(sys.argv) > 2 else "anonymous"
     
     try:
-        rag = InteractiveRAG(ollama_model=model_name)
+        rag = InteractiveRAG(ollama_model=model_name, student_id=student_id)
         rag.interactive_chat()
     except Exception as e:
         print(f"❌ Error: {e}")
