@@ -12,7 +12,7 @@ from datetime import datetime
 import time
 
 class InteractiveRAG:
-    def __init__(self, ollama_model="phi", student_id="anonymous"):
+    def __init__(self, ollama_model="phi:latest", student_id="anonymous"):
         """Initialize the RAG system with Ollama"""
         print("🚀 Starting Interactive RAG Chatbot...\n")
         

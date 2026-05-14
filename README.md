@@ -1,53 +1,55 @@
-# TextExtract - RAG (Retrieval Augmented Generation) System
+# 🤖 RAG Tutor System - Ollama Edition
 
-A complete end-to-end system for extracting text from PDFs, creating embeddings, and building a Retrieval-Augmented Generation (RAG) chatbot.
+A lightweight **Retrieval-Augmented Generation (RAG)** chatbot for educational tutoring using **Ollama** (local LLM) and **Chroma** (vector database).
 
-## 📁 Project Structure
+## 🚀 Quick Start (5 minutes)
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Start Ollama (in one terminal)
+ollama serve
+
+# 3. Pull a model (in another terminal)
+ollama pull mistral
+
+# 4. Run the chatbot
+python src/rag/interactive_chatbot.py
+
+# 5. Ask questions!
+❓ Your Question: How does the eye focus?
+```
+
+## 📚 What This Does
+
+- ✅ **Searches** 711 curriculum documents using vector embeddings
+- ✅ **Retrieves** the 3 most relevant documents
+- ✅ **Generates** answers using local Ollama LLM
+- ✅ **Works offline** - no API keys needed!
+
+## 📖 Documentation
+
+- **[SETUP_OLLAMA.md](SETUP_OLLAMA.md)** ← **START HERE** - Complete setup guide
+- [QUICKSTART.md](docs/QUICKSTART.md) - Quick reference
+- [COMPLETE_ARCHITECTURE.md](docs/COMPLETE_ARCHITECTURE.md) - System design
+- [CSV_GUIDE.md](docs/CSV_GUIDE.md) - Data formats
+
+## 🗂️ Project Structure
 
 ```
 TextExtract/
-├── data/                              # All data files
-│   ├── pdfs/                          # Source PDF files (place your 15 chapters here)
-│   ├── raw/                           # Raw extracted data
-│   │   ├── curriculum_chunks.json     # Extracted text chunks (JSON format)
-│   │   └── curriculum_paths.csv       # Curriculum paths
-│   └── processed/                     # Processed data ready for ML/RAG
-│       ├── rag_knowledge_base.csv     # Main knowledge base for RAG
-│       ├── question_bank.csv          # Q&A pairs
-│       ├── dataset_*.csv              # ML training datasets
-│       └── student_*.csv              # Student data
-│
-├── src/                               # Source code (organized by task)
-│   ├── pipeline/                      # Data extraction & processing
-│   │   ├── extract_curriculum.py      # Extract text from PDFs
-│   │   ├── json_to_csv.py             # Convert JSON to CSV
-│   │   └── create_rag_tutor_data.py   # Create tutor-specific data
-│   │
-│   ├── embeddings/                    # Vector database & search
-│   │   ├── build_vector_db.py         # Create embeddings & index
-│   │   └── search_vector_db.py        # Search similar chunks
-│   │
-│   ├── ml/                            # Machine Learning datasets
-│   │   ├── create_labeled_datasets.py # Create labeled data
-│   │   ├── create_proper_ml_datasets.py
-│   │   └── create_training_csv.py
-│   │
-│   └── rag/                           # RAG implementation
-│       ├── working_rag_system.py      # Main RAG chatbot
-│       └── rag_tutor_implementation.py # Tutor-specific logic
-│
-├── db/                                # Vector database
-│   └── chroma_db/                     # Persistent Chroma database
-│
-├── docs/                              # Documentation
-│   ├── README.md                      # This file
-│   ├── QUICKSTART.md                  # Quick start guide
-│   ├── COMPLETE_ARCHITECTURE.md       # System architecture
-│   ├── RAG_WORKING_PROOF.md           # Proof of concept
-│   ├── CSV_GUIDE.md                   # CSV format guide
-│   └── ... (other guides)
-│
-├── requirements.txt                   # Python dependencies
+├── src/rag/
+│   └── interactive_chatbot.py      ← Main RAG chatbot (RUN THIS)
+├── src/embeddings/
+│   ├── build_vector_db.py          ← Setup vector database
+│   └── search_vector_db.py
+├── data/processed/
+│   ├── rag_knowledge_base.csv      ← 711 curriculum docs
+│   └── question_bank.csv           ← Question library
+├── db/chroma_db/                   ← Vector database
+├── docs/                           ← Documentation
+└── requirements.txt                ← Dependencies
 └── .gitignore                         # Git ignore rules
 
 ```
