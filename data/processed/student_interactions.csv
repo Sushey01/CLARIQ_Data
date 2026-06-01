@@ -1,73 +1,54 @@
 interaction_id,student_id,timestamp,question_id,student_answer,correct,answer_quality,time_taken_seconds,hints_used,topic_covered,difficulty_level
-STU001_INT_0,STU001,2026-03-27 09:18:43,Q32,,,,159,1,The Human Eye,medium
-STU001_INT_3,STU001,2026-03-30 09:18:43,Q49,,,,279,0,The Human Eye,medium
-STU001_INT_6,STU001,2026-04-02 09:18:43,Q17,,,,174,0,The Human Eye,medium
-STU001_INT_9,STU001,2026-04-05 09:18:43,Q15,,,,216,2,The Human Eye,medium
-STU001_INT_12,STU001,2026-04-08 09:18:43,Q2,,,,164,1,The Human Eye,medium
-STU001_INT_15,STU001,2026-04-11 09:18:43,Q50,,,,88,3,The Human Eye,medium
-STU001_INT_18,STU001,2026-04-14 09:18:43,Q3,,,,202,2,The Human Eye,medium
-STU001_INT_21,STU001,2026-04-17 09:18:43,Q25,,,,107,2,The Human Eye,medium
-STU001_INT_24,STU001,2026-04-20 09:18:43,Q28,,,,156,2,The Human Eye,medium
-STU001_INT_27,STU001,2026-04-23 09:18:43,Q1,,,,171,0,The Human Eye,medium
-STU002_INT_0,STU002,2026-03-27 09:18:43,Q34,,,,234,0,The Human Eye,medium
-STU002_INT_3,STU002,2026-03-30 09:18:43,Q11,,,,144,1,The Human Eye,medium
-STU002_INT_6,STU002,2026-04-02 09:18:43,Q38,,,,91,2,The Human Eye,medium
-STU002_INT_9,STU002,2026-04-05 09:18:43,Q29,,,,214,2,The Human Eye,medium
-STU002_INT_12,STU002,2026-04-08 09:18:43,Q23,,,,267,0,The Human Eye,medium
-STU002_INT_15,STU002,2026-04-11 09:18:43,Q5,,,,164,3,The Human Eye,medium
-STU002_INT_18,STU002,2026-04-14 09:18:43,Q20,,,,109,2,The Human Eye,medium
-STU002_INT_21,STU002,2026-04-17 09:18:43,Q48,,,,62,2,The Human Eye,medium
-STU002_INT_24,STU002,2026-04-20 09:18:43,Q37,,,,197,3,The Human Eye,medium
-STU002_INT_27,STU002,2026-04-23 09:18:43,Q41,,,,230,3,The Human Eye,medium
-STU003_INT_0,STU003,2026-03-27 09:18:43,Q30,,,,187,3,The Human Eye,medium
-STU003_INT_3,STU003,2026-03-30 09:18:43,Q23,,,,124,0,The Human Eye,medium
-STU003_INT_6,STU003,2026-04-02 09:18:43,Q15,,,,125,1,The Human Eye,medium
-STU003_INT_9,STU003,2026-04-05 09:18:43,Q5,,,,263,0,The Human Eye,medium
-STU003_INT_12,STU003,2026-04-08 09:18:43,Q27,,,,110,2,The Human Eye,medium
-STU003_INT_15,STU003,2026-04-11 09:18:43,Q41,,,,266,0,The Human Eye,medium
-STU003_INT_18,STU003,2026-04-14 09:18:43,Q26,,,,94,1,The Human Eye,medium
-STU003_INT_21,STU003,2026-04-17 09:18:43,Q18,,,,297,0,The Human Eye,medium
-STU003_INT_24,STU003,2026-04-20 09:18:43,Q47,,,,281,2,The Human Eye,medium
-STU003_INT_27,STU003,2026-04-23 09:18:43,Q28,,,,56,0,The Human Eye,medium
-STU004_INT_0,STU004,2026-03-27 09:18:43,Q12,,,,52,0,The Human Eye,medium
-STU004_INT_3,STU004,2026-03-30 09:18:43,Q34,,,,242,0,The Human Eye,medium
-STU004_INT_6,STU004,2026-04-02 09:18:43,Q45,,,,276,0,The Human Eye,medium
-STU004_INT_9,STU004,2026-04-05 09:18:43,Q11,,,,296,3,The Human Eye,medium
-STU004_INT_12,STU004,2026-04-08 09:18:43,Q27,,,,150,3,The Human Eye,medium
-STU004_INT_15,STU004,2026-04-11 09:18:43,Q22,,,,87,0,The Human Eye,medium
-STU004_INT_18,STU004,2026-04-14 09:18:43,Q31,,,,125,1,The Human Eye,medium
-STU004_INT_21,STU004,2026-04-17 09:18:43,Q34,,,,182,0,The Human Eye,medium
-STU004_INT_24,STU004,2026-04-20 09:18:43,Q5,,,,39,2,The Human Eye,medium
-STU004_INT_27,STU004,2026-04-23 09:18:43,Q7,,,,189,3,The Human Eye,medium
-STU005_INT_0,STU005,2026-03-27 09:18:43,Q19,,,,129,1,The Human Eye,medium
-STU005_INT_3,STU005,2026-03-30 09:18:43,Q5,,,,177,3,The Human Eye,medium
-STU005_INT_6,STU005,2026-04-02 09:18:43,Q7,,,,74,0,The Human Eye,medium
-STU005_INT_9,STU005,2026-04-05 09:18:43,Q34,,,,244,3,The Human Eye,medium
-STU005_INT_12,STU005,2026-04-08 09:18:43,Q22,,,,181,2,The Human Eye,medium
-STU005_INT_15,STU005,2026-04-11 09:18:43,Q47,,,,192,0,The Human Eye,medium
-STU005_INT_18,STU005,2026-04-14 09:18:43,Q27,,,,273,0,The Human Eye,medium
-STU005_INT_21,STU005,2026-04-17 09:18:43,Q27,,,,38,2,The Human Eye,medium
-STU005_INT_24,STU005,2026-04-20 09:18:43,Q35,,,,278,1,The Human Eye,medium
-STU005_INT_27,STU005,2026-04-23 09:18:43,Q42,,,,32,3,The Human Eye,medium
-anonymous_INT_5426,anonymous,2026-05-10 21:48:25,force,3,"I am sorry, as an AI language model, I cannot provide personal answers to your queries. However, you can refer to the above context for possible answers. Also, please note that this is only a hypothetical example and not based on any real-world scenario.",109.59,phi,yes
-anonymous_INT_48688,anonymous,2026-05-10 21:50:48,photosynthesis,3,"Based on the two activities performed above, we can design an experiment to demonstrate that sunlight is essential for photosynthesis. If we set up two identical setups - one with plants exposed to sunlight and another with plants kept in the dark - we will observe that the plant exposed to sunlight performs photosynthesis more efficiently, producing more oxygen bubbles than the plant in the dark. This shows that sunlight is necessary for photosynthesis as it provides energy for the process. Wit",91.86,phi,yes
-anonymous_INT_61342,anonymous,2026-05-10 21:54:21,force?,3,The direction of force is perpendicular to the direction of magnetic field and current as given by Fleming’s left hand rule. Recall that the direction of current is taken opposite to the direction of motion of electrons. The force is therefore directed into the page. FFFFFiiiiiggggguuuuurrrrreeeee 1111122222.....1111144444,134.25,phi,yes
-anonymous_INT_4010,anonymous,2026-05-10 21:56:44,human eye,3,"The human eye is one of the most valuable and sensitive sense organs. It enables us to see the wonderful world and the colours around us. On closing the eyes, we can identify objects to some extent by their smell, taste, sound they make or by touch. It is, however, impossible to identify colours while closing the eyes. Thus, of all the sense organs, the human eye is the most significant one as it enables us to see the beautiful, colourful world around us. The human eye is like a camera. Its lens",133.86,phi,yes
-test_student_INT_61299,test_student,2026-05-10 21:59:21,what is the human eye,3,No answer generated,0.15,orca-mini,no
-anonymous_INT_95863,anonymous,2026-05-10 22:03:15,what is light,3,No answer generated,0.06,orca-mini,no
-test_student_INT_25026,test_student,2026-05-10 22:12:05,what is photosynthesis,3,"Photosynthesis is a process by which plants, algae, and some bacteria convert light energy from the sun into chemical energy in the form of organic compounds, such as glucose. This process occurs in the chloroplasts of plant cells and involves two main stages: the light-dependent reactions and the light-independent reactions (also known as the Calvin cycle). During the light-dependent reactions, light energy is used to split water molecules into oxygen and hydrogen ions. The hydrogen ions are us",165.42,orca-mini,yes
-anonymous_INT_68948,anonymous,2026-05-10 22:21:08,what is photosynthesis,3,"Photosynthesis is the process by which plants convert sunlight, carbon dioxide and water into oxygen and glucose (sugar) in order to produce energy for themselves. This process occurs in the chloroplasts of plant cells and is facilitated by a pigment called chlorophyll. During photosynthesis, the energy from sunlight is used to split water molecules into hydrogen ions, electrons, and oxygen. The electrons are then transferred along a chain of molecules known as the electron transport chain, whic",58.21,phi,yes
-anonymous_INT_1316,anonymous,2026-05-10 22:26:41,force,3,You are a curious user who has asked a question about the magnetic effects of electric current. The assistant gives you a short explanation and an example to help you understand.,96.75,phi,yes
-anonymous_INT_76819,anonymous,2026-05-11 10:34:36,force,3,"The rod gets displaced because a force perpendicular to its length and in the direction of current is exerted on it when it is placed in a magnetic field. This is because the magnetic force acting on an electron moving perpendicular to the magnetic field is given by F = I L B sin θ, where I is the current, L is the length of conductor, B is the magnitude of the magnetic field and θ is the angle between the direction of current and the direction of magnetic field. The magnetic force acts as a res",176.45,phi,yes
-anonymous_INT_34074,anonymous,2026-05-11 10:37:14,photosynthesis,3,"Photosynthesis is a life process that takes place in green plants. It is the process by which plants make their food using energy from sunlight. During this process, carbon dioxide is absorbed by the leaves of the plant and water is taken up by the roots.",71.64,phi,yes
-anonymous_INT_2743,anonymous,2026-05-11 22:00:02,human eye,3,"The human eye is one of the most valuable and sensitive sense organs. It enables us to see the wonderful world and the colours around us. On closing the eyes, we can identify objects to some extent by their smell, taste, sound they make or by touch. It is, however, impossible to identify colours while closing the eyes. Thus, of all the sense organs, the human eye is the most significant one as it enables us to see the beautiful, colourful world around us. The human eye is like a camera. Its lens",279.32,phi,yes
-anonymous_INT_53398,anonymous,2026-05-13 08:15:53,hello,3,No answer generated,0.35,mistral,no
-anonymous_INT_60255,anonymous,2026-05-13 08:16:00,pressure,3,No answer generated,0.06,mistral,no
-anonymous_INT_84425,anonymous,2026-05-13 08:16:24,pressure,3,No answer generated,0.14,mistral,no
-anonymous_INT_47418,anonymous,2026-05-13 09:24:07,pressure,3,No answer generated,0.16,mistral,no
-anonymous_INT_75807,anonymous,2026-05-13 09:26:15,What is photosynthesis?,3,No answer generated,0.07,mistral,no
-anonymous_INT_17557,anonymous,2026-05-13 09:33:37,pressure,3,"High blood pressure is also called hypertension and is caused by the constriction of arterioles, which results in increased resistance to blood flow. It can lead to the rupture of an artery and internal bleeding. The tubes— blood vessels Arteries are the vessels which carry blood away from the heart to various organs of the body. Veins collect the blood from different organs and bring it back to the heart. They do not need thick walls because the blood is no longer under pressure, instead they h",212.53,phi,yes
-anonymous_INT_86728,anonymous,2026-05-14 13:03:06,photosynthesis,3,"Photosynthesis is a process that takes place in plants, where they convert sunlight into energy-rich compounds such as glucose.",31.54,phi,yes
-student_001_SOC_41252,student_001,2026-05-14 19:19:01,what is energy?,2,"Energy is the capacity to do work, and it exists in many forms, including kinetic energy (energy of motion), potential energy (stored energy), thermal energy (heat), and electromagnetic energy. It is a fundamental principle in physics, and understanding how energy works is important for...",socratic,phi:latest
-student_001_SOC_15669,student_001,2026-05-14 19:30:15,photosynthesis,2,"Photosynthesis is the process of converting light energy into chemical energy that can be used by organisms to survive. It occurs in the chloroplasts of plant cells, where sunlight is absorbed by pigments called chlorophylls. This energy is then used to convert carbon dioxide and water into glucose...",socratic,phi:latest
-student_001_SOC_95037,student_001,2026-05-14 19:36:35,newtons law,1,"When you water a seed, the seed absorbs the water through its roots. The roots then grow downwards towards the ground. This is because the force of gravity pulls the roots in that direction. As the stem grows upwards, it pushes against the pull of gravity to reach the sun's light.",socratic,phi:latest
+STU001_INT_0,STU001,2026-04-14 20:33:27,Q21,,,,115,1,The Human Eye,medium
+STU001_INT_3,STU001,2026-04-17 20:33:27,Q36,,,,215,0,The Human Eye,medium
+STU001_INT_6,STU001,2026-04-20 20:33:27,Q24,,,,132,3,The Human Eye,medium
+STU001_INT_9,STU001,2026-04-23 20:33:27,Q18,,,,178,2,The Human Eye,medium
+STU001_INT_12,STU001,2026-04-26 20:33:27,Q38,,,,68,0,The Human Eye,medium
+STU001_INT_15,STU001,2026-04-29 20:33:27,Q14,,,,266,0,The Human Eye,medium
+STU001_INT_18,STU001,2026-05-02 20:33:27,Q15,,,,261,0,The Human Eye,medium
+STU001_INT_21,STU001,2026-05-05 20:33:27,Q19,,,,172,2,The Human Eye,medium
+STU001_INT_24,STU001,2026-05-08 20:33:27,Q46,,,,175,0,The Human Eye,medium
+STU001_INT_27,STU001,2026-05-11 20:33:27,Q29,,,,260,3,The Human Eye,medium
+STU002_INT_0,STU002,2026-04-14 20:33:27,Q37,,,,34,0,The Human Eye,medium
+STU002_INT_3,STU002,2026-04-17 20:33:27,Q8,,,,78,1,The Human Eye,medium
+STU002_INT_6,STU002,2026-04-20 20:33:27,Q4,,,,56,2,The Human Eye,medium
+STU002_INT_9,STU002,2026-04-23 20:33:27,Q13,,,,210,3,The Human Eye,medium
+STU002_INT_12,STU002,2026-04-26 20:33:27,Q4,,,,31,3,The Human Eye,medium
+STU002_INT_15,STU002,2026-04-29 20:33:27,Q19,,,,100,1,The Human Eye,medium
+STU002_INT_18,STU002,2026-05-02 20:33:27,Q4,,,,156,3,The Human Eye,medium
+STU002_INT_21,STU002,2026-05-05 20:33:27,Q15,,,,190,2,The Human Eye,medium
+STU002_INT_24,STU002,2026-05-08 20:33:27,Q39,,,,62,3,The Human Eye,medium
+STU002_INT_27,STU002,2026-05-11 20:33:27,Q42,,,,299,1,The Human Eye,medium
+STU003_INT_0,STU003,2026-04-14 20:33:27,Q44,,,,261,2,The Human Eye,medium
+STU003_INT_3,STU003,2026-04-17 20:33:27,Q46,,,,126,0,The Human Eye,medium
+STU003_INT_6,STU003,2026-04-20 20:33:27,Q36,,,,128,1,The Human Eye,medium
+STU003_INT_9,STU003,2026-04-23 20:33:27,Q49,,,,45,2,The Human Eye,medium
+STU003_INT_12,STU003,2026-04-26 20:33:27,Q11,,,,296,1,The Human Eye,medium
+STU003_INT_15,STU003,2026-04-29 20:33:27,Q13,,,,103,1,The Human Eye,medium
+STU003_INT_18,STU003,2026-05-02 20:33:27,Q13,,,,60,1,The Human Eye,medium
+STU003_INT_21,STU003,2026-05-05 20:33:27,Q45,,,,116,2,The Human Eye,medium
+STU003_INT_24,STU003,2026-05-08 20:33:27,Q19,,,,271,3,The Human Eye,medium
+STU003_INT_27,STU003,2026-05-11 20:33:27,Q39,,,,249,0,The Human Eye,medium
+STU004_INT_0,STU004,2026-04-14 20:33:27,Q5,,,,148,0,The Human Eye,medium
+STU004_INT_3,STU004,2026-04-17 20:33:27,Q34,,,,32,2,The Human Eye,medium
+STU004_INT_6,STU004,2026-04-20 20:33:27,Q5,,,,170,0,The Human Eye,medium
+STU004_INT_9,STU004,2026-04-23 20:33:27,Q29,,,,260,2,The Human Eye,medium
+STU004_INT_12,STU004,2026-04-26 20:33:27,Q27,,,,215,2,The Human Eye,medium
+STU004_INT_15,STU004,2026-04-29 20:33:27,Q3,,,,147,3,The Human Eye,medium
+STU004_INT_18,STU004,2026-05-02 20:33:27,Q25,,,,265,3,The Human Eye,medium
+STU004_INT_21,STU004,2026-05-05 20:33:27,Q44,,,,109,0,The Human Eye,medium
+STU004_INT_24,STU004,2026-05-08 20:33:27,Q15,,,,263,1,The Human Eye,medium
+STU004_INT_27,STU004,2026-05-11 20:33:27,Q5,,,,37,2,The Human Eye,medium
+STU005_INT_0,STU005,2026-04-14 20:33:27,Q29,,,,61,1,The Human Eye,medium
+STU005_INT_3,STU005,2026-04-17 20:33:27,Q12,,,,283,1,The Human Eye,medium
+STU005_INT_6,STU005,2026-04-20 20:33:27,Q41,,,,35,1,The Human Eye,medium
+STU005_INT_9,STU005,2026-04-23 20:33:27,Q14,,,,112,1,The Human Eye,medium
+STU005_INT_12,STU005,2026-04-26 20:33:27,Q40,,,,242,3,The Human Eye,medium
+STU005_INT_15,STU005,2026-04-29 20:33:27,Q36,,,,131,0,The Human Eye,medium
+STU005_INT_18,STU005,2026-05-02 20:33:27,Q46,,,,127,3,The Human Eye,medium
+STU005_INT_21,STU005,2026-05-05 20:33:27,Q6,,,,194,0,The Human Eye,medium
+STU005_INT_24,STU005,2026-05-08 20:33:27,Q49,,,,36,0,The Human Eye,medium
+STU005_INT_27,STU005,2026-05-11 20:33:27,Q16,,,,115,1,The Human Eye,medium
+student_001_SOC_18470,student_001,2026-05-14 20:51:58,photosynthesis,1,"Photosynthesis is the process of plants converting sunlight into energy through their leaves using chlorophyll. The sun's rays provide the necessary energy to drive this chemical reaction. During photosynthesis, plants take in carbon dioxide from the air and water from the soil. They combine these...",socratic,phi:latest
+student_001_SOC_37973,student_001,2026-05-14 21:08:57,metal,1,"(iii) is a good conductor of heat because metals have free electrons that can move around easily and transfer heat energy quickly. On the other hand, (iv) is a poor conductor of heat because its particles are tightly packed and cannot move as freely. 
+(a) ""Malleable"" means a metal can be shaped...",socratic,phi:latest

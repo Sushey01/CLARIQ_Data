@@ -1,21 +1,21 @@
 student_id,topic,questions_attempted,questions_correct,accuracy_percent,average_time_seconds,mastery_level,last_attempted,readiness_for_next_topic
-STU001,The Human Eye,13,14,77,275,intermediate,2026-04-15,no
-STU001,Light and Refraction,17,6,71,76,intermediate,2026-03-29,yes
-STU001,Lenses,20,8,78,132,intermediate,2026-03-27,no
-STU001,Vision Defects,18,18,49,248,beginner,2026-04-11,yes
-STU002,The Human Eye,10,3,54,170,beginner,2026-04-25,yes
-STU002,Light and Refraction,20,5,92,133,advanced,2026-04-01,yes
-STU002,Lenses,16,5,58,244,beginner,2026-04-08,yes
-STU002,Vision Defects,13,2,53,77,beginner,2026-04-11,no
-STU003,The Human Eye,19,15,51,234,beginner,2026-04-04,no
-STU003,Light and Refraction,12,14,40,217,beginner,2026-04-08,no
-STU003,Lenses,8,9,66,88,beginner,2026-04-10,yes
-STU003,Vision Defects,6,18,43,173,beginner,2026-04-17,no
-STU004,The Human Eye,15,7,43,177,beginner,2026-04-25,yes
-STU004,Light and Refraction,12,9,90,157,advanced,2026-04-15,yes
-STU004,Lenses,12,15,75,212,intermediate,2026-04-09,no
-STU004,Vision Defects,12,4,90,91,advanced,2026-04-06,no
-STU005,The Human Eye,10,17,48,223,beginner,2026-04-23,yes
-STU005,Light and Refraction,17,12,99,280,advanced,2026-04-21,yes
-STU005,Lenses,9,7,91,205,advanced,2026-04-03,no
-STU005,Vision Defects,8,15,77,145,intermediate,2026-04-18,yes
+STU001,The Human Eye,19,8,94,83,advanced,2026-04-25,no
+STU001,Light and Refraction,9,16,82,202,intermediate,2026-04-24,no
+STU001,Lenses,9,7,71,260,intermediate,2026-04-19,yes
+STU001,Vision Defects,13,6,41,183,beginner,2026-04-17,no
+STU002,The Human Eye,5,9,62,205,beginner,2026-04-22,no
+STU002,Light and Refraction,14,8,73,108,intermediate,2026-05-13,yes
+STU002,Lenses,12,17,70,144,beginner,2026-04-20,no
+STU002,Vision Defects,15,9,64,150,beginner,2026-05-03,yes
+STU003,The Human Eye,15,13,99,74,advanced,2026-04-18,no
+STU003,Light and Refraction,13,7,46,145,beginner,2026-04-19,no
+STU003,Lenses,17,17,50,288,beginner,2026-05-01,yes
+STU003,Vision Defects,11,6,83,179,intermediate,2026-04-22,yes
+STU004,The Human Eye,14,12,64,194,beginner,2026-04-17,no
+STU004,Light and Refraction,12,2,44,290,beginner,2026-05-08,yes
+STU004,Lenses,19,15,83,274,intermediate,2026-05-10,yes
+STU004,Vision Defects,10,10,91,74,advanced,2026-04-20,no
+STU005,The Human Eye,6,2,56,252,beginner,2026-05-04,yes
+STU005,Light and Refraction,18,18,82,207,intermediate,2026-05-12,no
+STU005,Lenses,6,12,76,121,intermediate,2026-04-14,yes
+STU005,Vision Defects,14,10,71,63,intermediate,2026-05-07,no

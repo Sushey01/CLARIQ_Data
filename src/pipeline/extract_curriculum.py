@@ -116,8 +116,8 @@ def extract_and_chunk_pdfs(pdf_folder, output_file):
 
 # ===== CONFIGURATION =====
 # Update this path to match your folder exactly
-PDF_FOLDER = "/home/shekhar/Downloads/jesc1dd" 
-OUTPUT_FILE = "../../data/raw/curriculum_chunks.json"
+PDF_FOLDER = "data/pdfs"
+OUTPUT_FILE = "data/raw/curriculum_chunks.json"
 
 # Run
 if __name__ == "__main__":

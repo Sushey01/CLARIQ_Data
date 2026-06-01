@@ -332,7 +332,7 @@ def create_curriculum_paths(csv_file):
     return paths
 
 if __name__ == "__main__":
-    JSON_FILE = "curriculum_chunks.json"
+    JSON_FILE = "data/raw/curriculum_chunks.json"
     
     print("=" * 70)
     print("CREATING RAG CONVERSATIONAL TUTOR SYSTEM DATA")
@@ -342,22 +342,22 @@ if __name__ == "__main__":
     print("=" * 70)
     print("[1] KNOWLEDGE BASE - For RAG Retrieval")
     print("=" * 70)
-    create_rag_knowledge_base(JSON_FILE, "rag_knowledge_base.csv")
+    create_rag_knowledge_base(JSON_FILE, "data/processed/rag_knowledge_base.csv")
     
     print("=" * 70)
     print("[2] QUESTION BANK - For Student Assessment")
     print("=" * 70)
-    create_question_bank(JSON_FILE, "question_bank.csv")
+    create_question_bank(JSON_FILE, "data/processed/question_bank.csv")
     
     print("=" * 70)
     print("[3] STUDENT INTERACTIONS - Tracking Student Responses")
     print("=" * 70)
-    create_student_interactions_template("student_interactions.csv")
+    create_student_interactions_template("data/processed/student_interactions.csv")
     
     print("=" * 70)
     print("[4] STUDENT PERFORMANCE - For Curriculum Adaptation")
     print("=" * 70)
-    create_student_performance_tracking("student_performance.csv")
+    create_student_performance_tracking("data/processed/student_performance.csv")
     
     print("=" * 70)
     print("[5] CURRICULUM PATHS - Learning Sequence Design")
