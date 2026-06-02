@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from datetime import datetime
 from typing import Dict, List, Optional
 
 
@@ -26,6 +27,9 @@ class StudentProfile(BaseModel):
     student_id: str
     name: str
     grade: Optional[str]
-    created_at: Optional[str]
+    created_at: Optional[str] = None
     metadata: Optional[Dict] = {}
     topics: Optional[Dict[str, TopicRecord]] = Field(default_factory=dict)
+
+
+

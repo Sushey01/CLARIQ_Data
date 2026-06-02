@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.routers import onboarding
+from routers import onboarding
 
 app = FastAPI(title="clariq Backend")
 

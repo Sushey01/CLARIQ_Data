@@ -1,0 +1,36 @@
+{
+  "student_id": "string",
+  "name": "string",
+  "grade": "string",
+  "created_at": "string",
+  "metadata": {},
+  "topics": {
+    "additionalProp1": {
+      "history": [],
+      "current": {
+        "understanding": 0.0,
+        "confidence": 0.0,
+        "misconceptions": [],
+        "last_studied": "string"
+      }
+    },
+    "additionalProp2": {
+      "history": [],
+      "current": {
+        "understanding": 0.0,
+        "confidence": 0.0,
+        "misconceptions": [],
+        "last_studied": "string"
+      }
+    },
+    "additionalProp3": {
+      "history": [],
+      "current": {
+        "understanding": 0.0,
+        "confidence": 0.0,
+        "misconceptions": [],
+        "last_studied": "string"
+      }
+    }
+  }
+}
