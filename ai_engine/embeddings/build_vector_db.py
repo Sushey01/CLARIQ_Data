@@ -6,7 +6,7 @@ from pathlib import Path
 
 # Get absolute paths based on script location
 script_dir = Path(__file__).resolve().parent
-project_root = script_dir.parent.parent
+project_root = script_dir.parents[1]
 
 # Initialize Chroma client with persistent storage
 db_dir = project_root / "db" / "chroma_db"
@@ -38,12 +38,12 @@ ids = []
 metadatas = []
 
 for chunk in chunks:
-    documents.append(chunk["content"])
-    ids.append(chunk["chunk_id"])
+    documents.append(chunk.get("content", ""))
+    ids.append(chunk.get("chunk_id"))
     metadatas.append({
-        "source_pdf": chunk["source_pdf"],
-        "page": str(chunk["page"]),
-        "word_count": str(chunk["word_count"])
+        "source_pdf": chunk.get("source_pdf"),
+        "page": str(chunk.get("page")),
+        "word_count": str(chunk.get("word_count"))
     })
 
 # Generate embeddings and add to collection

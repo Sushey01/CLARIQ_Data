@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "StudentProfile",
+  "type": "object",
+  "required": ["student_id", "name", "created_at"],
+  "properties": {
+    "student_id": { "type": "string" },
+    "name": { "type": "string" },
+    "grade": { "type": "string" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "metadata": { "type": "object" },
+    "topics": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "timestamp": { "type": "string", "format": "date-time" },
+                "understanding": { "type": "number" },
+                "confidence": { "type": "number" },
+                "evidence": { "type": "string" },
+                "session_id": { "type": "string" }
+              },
+              "required": ["timestamp"]
+            }
+          },
+          "current": {
+            "type": "object",
+            "properties": {
+              "understanding": { "type": "number" },
+              "confidence": { "type": "number" },
+              "misconceptions": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "last_studied": { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

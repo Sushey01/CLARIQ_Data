@@ -6,10 +6,11 @@ class CurriculumSearchEngine:
     def __init__(self):
         """Initialize the search engine with vector database and embedding model."""
         # Connect to existing vector database
-        db_dir = Path("../../db/chroma_db")
+        project_root = Path(__file__).resolve().parents[2]
+        db_dir = project_root / "db" / "chroma_db"
         if not db_dir.exists():
             raise FileNotFoundError(
-                "Vector database not found! Run 'python src/embeddings/build_vector_db.py' first."
+                "Vector database not found! Run 'python ai_engine/embeddings/build_vector_db.py' first."
             )
         
         self.client = chromadb.PersistentClient(path=str(db_dir))
@@ -21,13 +22,6 @@ class CurriculumSearchEngine:
     def search(self, query, top_k=5):
         """
         Search for relevant curriculum chunks using semantic similarity.
-        
-        Args:
-            query (str): The search query (e.g., "What is photosynthesis?")
-            top_k (int): Number of results to return
-            
-        Returns:
-            list: List of matching chunks with scores
         """
         # Generate embedding for the query
         query_embedding = self.embedding_model.encode(query)
@@ -36,7 +30,7 @@ class CurriculumSearchEngine:
         results = self.collection.query(
             query_embeddings=[query_embedding.tolist()],
             n_results=top_k,
-            include=["documents", "metadatas", "distances"]
+            include=["documents", "metadatas", "distances", "ids"]
         )
         
         # Format results
@@ -44,8 +38,8 @@ class CurriculumSearchEngine:
         for i in range(len(results["documents"][0])):
             formatted_results.append({
                 "content": results["documents"][0][i],
-                "source_pdf": results["metadatas"][0][i]["source_pdf"],
-                "page": int(results["metadatas"][0][i]["page"]),
+                "source_pdf": results["metadatas"][0][i].get("source_pdf"),
+                "page": int(results["metadatas"][0][i].get("page", 0)),
                 "chunk_id": results["ids"][0][i],
                 "similarity_score": round(1 - results["distances"][0][i], 3)  # Convert distance to similarity
             })

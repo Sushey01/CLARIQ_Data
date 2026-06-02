@@ -23,5 +23,5 @@ def init_session():
 
 
 if __name__ == "__main__":
-    # Run a simple dev server: python -m src.rag.session_api
+    # Run a simple dev server: python -m ai_engine.rag.session_api
     app.run(host="0.0.0.0", port=8000, debug=True)
