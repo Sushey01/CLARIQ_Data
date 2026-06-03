@@ -1,36 +1,15 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
+
 from models.profile import StudentProfile
-from pathlib import Path
-import json
-from uuid import uuid4
-from datetime import datetime
+from services.profile_service import create_profile as create_profile_service
+from services.profile_service import get_profile as get_profile_service
 
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
 
-STORAGE = Path("data/student_profiles")
-STORAGE.mkdir(parents=True, exist_ok=True)
-
 @router.post("/create", response_model=StudentProfile)
 def create_profile(profile: StudentProfile):
-    sid = profile.student_id or str(uuid4())
-    if (STORAGE / f"{sid}.json").exists():
-        raise HTTPException(status_code=400, detail="Profile already exists")
-    
-    # Auto-generate created_at if missing
-    if not profile.created_at:
-        profile.created_at = datetime.utcnow().isoformat()
-    
-    path = STORAGE / f"{sid}.json"
-    
-    # FIX: Use model_dump_json() instead of .json() for Pydantic V2
-    path.write_text(profile.model_dump_json(indent=2))
-    
-    return profile
+    return create_profile_service(profile)
 
 @router.get("/{student_id}", response_model=StudentProfile)
 def get_profile(student_id: str):
-    path = STORAGE / f"{student_id}.json"
-    if not path.exists():
-        raise HTTPException(status_code=404, detail="Profile not found")
-    data = json.loads(path.read_text())
-    return StudentProfile(**data)
+    return get_profile_service(student_id)
