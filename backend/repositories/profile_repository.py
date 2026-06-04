@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+from typing import List
 
 from models.profile import StudentProfile
 
@@ -24,3 +25,21 @@ def save_profile(profile: StudentProfile) -> None:
 def load_profile(student_id: str) -> StudentProfile:
     data = json.loads(profile_path(student_id).read_text())
     return StudentProfile(**data)
+
+
+def list_profiles() -> List[StudentProfile]:
+    profiles: List[StudentProfile] = []
+    for p in STORAGE.glob("*.json"):
+        try:
+            data = json.loads(p.read_text())
+            profiles.append(StudentProfile(**data))
+        except Exception:
+            # skip malformed files
+            continue
+    return profiles
+
+
+def delete_profile(student_id: str) -> None:
+    p = profile_path(student_id)
+    if p.exists():
+        p.unlink()

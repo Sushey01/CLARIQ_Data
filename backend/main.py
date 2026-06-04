@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import onboarding
+from routers import onboarding, sessions
 
 app = FastAPI(title="clariq Backend")
 
@@ -10,3 +10,4 @@ async def health():
 
 
 app.include_router(onboarding.router)
+app.include_router(sessions.router)

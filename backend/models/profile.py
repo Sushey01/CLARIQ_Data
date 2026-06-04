@@ -31,4 +31,13 @@ class StudentProfile(BaseModel):
     topics: Optional[Dict[str, TopicRecord]] = Field(default_factory=dict)
 
 
+class StudentProfileUpdate(BaseModel):
+    student_id: Optional[str] = None
+    name: Optional[str] = None
+    grade: Optional[str] = None
+    created_at: Optional[str] = None
+    metadata: Optional[Dict] = Field(default_factory=dict)
+    topics: Optional[Dict[str, TopicRecord]] = Field(default_factory=dict)
+
+
 
