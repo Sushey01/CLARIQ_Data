@@ -1,3 +1,4 @@
+import os
 import json
 import urllib.request
 import urllib.error
@@ -37,7 +38,17 @@ def repl(base_url: str = "http://127.0.0.1:8000"):
     eng = SocraticEngine(base_url)
     print("Socratic Engine CLI — will call backend at", base_url)
     name = input("Student name: ").strip()
-    prof = eng.create_profile(name)
+    # Allow empty grade but fallback to BACKEND_DEFAULT_GRADE env or '10'
+    grade = input("Grade (e.g., 10, 11) — press Enter to use default: ").strip()
+    if not grade:
+        grade = os.environ.get("BACKEND_DEFAULT_GRADE", "10")
+        print(f"Using default grade: {grade}")
+
+    try:
+        prof = eng.create_profile(name, grade)
+    except Exception as e:
+        print(f"Failed to create profile: {e}")
+        return
     sid = prof["student_id"]
     print("Created student_id:", sid)
     topic = input("Topic to study (optional): ").strip() or None
