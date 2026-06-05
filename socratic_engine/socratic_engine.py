@@ -6,7 +6,9 @@ from typing import Optional
 
 class SocraticEngine:
     def __init__(self, base_url: str = "http://127.0.0.1:8000"):
-        self.base = base_url.rstrip("")
+        # Normalize base URL by removing any trailing slash so paths like
+        # "/sessions/start" concatenate correctly.
+        self.base = base_url.rstrip("/")
 
     def _post(self, path: str, payload: dict) -> dict:
         url = f"{self.base}{path}"
