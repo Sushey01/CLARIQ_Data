@@ -14,7 +14,7 @@ import time
 class InteractiveRAG:
     def __init__(self, ollama_model="phi:latest", student_id="anonymous"):
         """Initialize the RAG system with Ollama"""
-        print("🚀 Starting Interactive RAG Chatbot...\n")
+        print("🚀 Starting RAG Chatbot...\n")
         
         # Ollama configuration
         self.ollama_url = "http://localhost:11434/api/generate"
@@ -164,7 +164,7 @@ ANSWER:"""
             print(f"Source: {metadata.get('source_pdf', 'Unknown')} (Page {metadata.get('page', '?')})")
             print(f"Word Count: {metadata.get('word_count', '?')}")
             print("-" * 75)
-            print(f"{doc[:500]}...")
+            print(f"{doc[:200].strip()}...")
             print()
         
         print("=" * 75)

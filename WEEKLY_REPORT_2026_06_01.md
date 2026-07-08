@@ -299,6 +299,10 @@
 - Identified Colab Pro A100 availability: Confirmed 40 compute units/month sufficient for LoRA training (4-6h ≈ 15 units)
 - Updated repository memory with Socratic architecture decisions: `/memories/repo/socratic_implementation.md` → `/memories/repo/socratic_architecture_week7.md`
 - Prepared GPU resource checklist and estimated compute costs (£10 Colab Pro/month)
+- Refined the live Socratic chatbot so a topic stays open across multiple turns instead of stopping after one exchange
+- Added adaptive follow-up prompts and hint-based fallback so the bot keeps guiding the student when they are unsure
+- Corrected the direct-run default model to `phi:latest` after confirming `mistral` was not installed locally
+- Confirmed the current laptop is memory-constrained, so the near-term model strategy is to keep prompts short and use the lightest available Ollama model
 
 ---
 
@@ -508,6 +512,7 @@
 - `requirements.txt` - Added chromadb, sentence-transformers, peft (for LoRA)
 - `src/embeddings/build_vector_db.py` - Completed & tested
 - `src/embeddings/search_vector_db.py` - Completed & tested
+- `src/rag/socratic_chatbot.py` - Updated to keep the same topic open across multiple turns and use Socratic fallback hints
 
 ### Files Created
 - `src/embeddings/build_vector_db.py` - 250 lines, vectorization pipeline
@@ -523,7 +528,7 @@
 - `data/processed/retrieval_validation_results.csv` - Embedding model benchmark results
 
 ### Files Not Yet Modified (Scheduled for Week 8-10)
-- `src/rag/socratic_chatbot.py` - Will integrate fine-tuned LoRA model (Week 9)
+- `src/rag/socratic_chatbot.py` - Will later integrate the fine-tuned LoRA model (current loop refinement already merged)
 - `src/rag/interactive_chatbot.py` - Will add answer-detection layer (Week 10)
 
 ### Git Commits Made (Week 6-7)

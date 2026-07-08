@@ -1,0 +1,41 @@
+{
+  "session_id": "59fc15c2-719f-4d31-bfcc-e886073a6fb9",
+  "student_id": "09626dae-9ac4-43c2-a230-d02206eed8c5",
+  "topic": "physics",
+  "started_at": "2026-07-05T04:45:23.798816+00:00",
+  "events": [
+    {
+      "timestamp": "2026-07-05T04:55:57.821071+00:00",
+      "role": "student",
+      "content": "Can you explain what a variable is in simple terms?",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-07-05T04:55:57.826536+00:00",
+      "role": "tutor",
+      "content": "I couldn't generate a response. The model might be loading — please try again in a moment.",
+      "metadata": {
+        "sources": [
+          {
+            "source_pdf": "grade-10-science-and-technology-part-i.pdf",
+            "page": 4,
+            "similarity": 0.139
+          },
+          {
+            "source_pdf": "grade-10-science-and-technology-part-i.pdf",
+            "page": 3,
+            "similarity": 0.094
+          },
+          {
+            "source_pdf": "grade-10-science-and-technology-part-i.pdf",
+            "page": 1,
+            "similarity": 0.073
+          }
+        ],
+        "hint_depth": 0,
+        "model_used": "phi:latest"
+      }
+    }
+  ],
+  "status": "active"
+}

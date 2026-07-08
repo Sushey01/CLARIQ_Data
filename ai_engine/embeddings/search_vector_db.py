@@ -30,17 +30,19 @@ class CurriculumSearchEngine:
         results = self.collection.query(
             query_embeddings=[query_embedding.tolist()],
             n_results=top_k,
-            include=["documents", "metadatas", "distances", "ids"]
+            include=["documents", "metadatas", "distances"]
         )
         
         # Format results
         formatted_results = []
         for i in range(len(results["documents"][0])):
+            metadata = results["metadatas"][0][i] or {}
+            chunk_id = results.get("ids", [{}])[0][i] if "ids" in results else f"chunk_{i}"
             formatted_results.append({
                 "content": results["documents"][0][i],
-                "source_pdf": results["metadatas"][0][i].get("source_pdf"),
-                "page": int(results["metadatas"][0][i].get("page", 0)),
-                "chunk_id": results["ids"][0][i],
+                "source_pdf": metadata.get("source_pdf"),
+                "page": int(metadata.get("page", 0)),
+                "chunk_id": chunk_id,
                 "similarity_score": round(1 - results["distances"][0][i], 3)  # Convert distance to similarity
             })
         

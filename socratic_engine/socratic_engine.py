@@ -51,6 +51,20 @@ class SocraticEngine:
         """Reset the hint depth for the session (e.g. when changing topic)."""
         self._post_no_body(f"/sessions/{session_id}/chat/reset")
 
+    def ingest_url(self, url: str, clear_existing: bool = False) -> dict:
+        """Start background ingestion of a PDF url."""
+        return self._post("/pipeline/ingest-url", {"url": url, "clear_existing": clear_existing})
+
+    def get_pipeline_status(self) -> dict:
+        """Check pipeline status."""
+        url = f"{self.base}/pipeline/status"
+        req = urllib.request.Request(url, method="GET")
+        try:
+            with urllib.request.urlopen(req) as resp:
+                return json.load(resp)
+        except urllib.error.HTTPError as e:
+            raise RuntimeError(e.read().decode())
+
 
 def repl(base_url: str = "http://127.0.0.1:8000"):
     eng = SocraticEngine(base_url)
@@ -58,7 +72,7 @@ def repl(base_url: str = "http://127.0.0.1:8000"):
     print("  🎓 CLARIQ — Socratic Tutor CLI")
     print("=" * 60)
     print(f"Backend: {base_url}")
-    print("Commands: /topic <new topic>  /reset  /quit\n")
+    print("Commands: /topic <new topic>  /reset  /ingest <url>  /status  /quit\n")
 
     name = input("Student name: ").strip()
     # Allow empty grade but fallback to BACKEND_DEFAULT_GRADE env or '10'
@@ -107,6 +121,31 @@ def repl(base_url: str = "http://127.0.0.1:8000"):
                     session_id = session["session_id"]
                     print(f"📚 Switched to topic: {topic}")
                     print(f"✅ New session: {session_id}\n")
+                continue
+            if msg.lower().startswith("/ingest "):
+                url = msg[8:].strip()
+                if url:
+                    print(f"🚀 Starting background ingestion for {url}")
+                    try:
+                        res = eng.ingest_url(url, clear_existing=True)
+                        print(f"✅ {res.get('message', 'Started')}")
+                        print("Type /status to check progress.")
+                    except Exception as e:
+                        print(f"❌ Failed to start ingestion: {e}")
+                continue
+            if msg.lower() == "/status":
+                try:
+                    status = eng.get_pipeline_status()
+                    is_running = status.get("is_running", False)
+                    print("\n📊 Pipeline Status:")
+                    print(f"   Running: {'Yes ⏳' if is_running else 'No ✅'}")
+                    if status.get("last_url"):
+                        print(f"   Last URL: {status['last_url']}")
+                    if status.get("last_error"):
+                        print(f"   Last Error: {status['last_error']}")
+                    print()
+                except Exception as e:
+                    print(f"❌ Failed to get status: {e}")
                 continue
 
             # Send message and get Socratic response

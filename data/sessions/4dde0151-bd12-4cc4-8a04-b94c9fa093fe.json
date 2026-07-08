@@ -1,0 +1,41 @@
+{
+  "session_id": "4dde0151-bd12-4cc4-8a04-b94c9fa093fe",
+  "student_id": "253149bd-2312-471f-8a2d-6148ff0c92f2",
+  "topic": "physics",
+  "started_at": "2026-07-05T05:31:01.276374+00:00",
+  "events": [
+    {
+      "timestamp": "2026-07-05T05:31:14.304023+00:00",
+      "role": "student",
+      "content": "Can you explain what a variable is in simple terms?",
+      "metadata": {}
+    },
+    {
+      "timestamp": "2026-07-05T05:31:14.309078+00:00",
+      "role": "tutor",
+      "content": "I'm having trouble connecting to my language model right now. Please make sure Ollama is running (`ollama serve`) and try again.",
+      "metadata": {
+        "sources": [
+          {
+            "source_pdf": "grade-10-science-and-technology-part-i.pdf",
+            "page": 4,
+            "similarity": 0.139
+          },
+          {
+            "source_pdf": "grade-10-science-and-technology-part-i.pdf",
+            "page": 3,
+            "similarity": 0.094
+          },
+          {
+            "source_pdf": "grade-10-science-and-technology-part-i.pdf",
+            "page": 1,
+            "similarity": 0.073
+          }
+        ],
+        "hint_depth": 0,
+        "model_used": "orca-mini:latest"
+      }
+    }
+  ],
+  "status": "active"
+}
