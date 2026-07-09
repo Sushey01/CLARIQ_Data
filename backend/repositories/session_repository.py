@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 from typing import List
 
-from models.session import Session, SessionEvent
+from ..models.session import Session, SessionEvent
 
 STORAGE = Path("data/sessions")
 STORAGE.mkdir(parents=True, exist_ok=True)

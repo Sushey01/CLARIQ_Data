@@ -11,9 +11,9 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from models.session import SessionEvent
-from services.session_service import get_session, record_event
-from services.chat_service import generate_socratic_response, reset_hint_depth
+from ..models.session import SessionEvent
+from ..services.session_service import get_session, record_event
+from ..services.chat_service import generate_socratic_response, reset_hint_depth
 
 router = APIRouter(prefix="/sessions", tags=["chat"])
 

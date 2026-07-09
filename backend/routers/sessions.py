@@ -3,8 +3,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from models.session import Session, SessionEvent
-from services.session_service import (
+from ..models.session import Session, SessionEvent
+from ..services.session_service import (
     start_session as start_session_service,
     record_event as record_event_service,
     get_session as get_session_service,

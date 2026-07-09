@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import onboarding, sessions, chat, pipeline
+
+try:
+    from .routers import onboarding, sessions, chat, pipeline
+except ImportError:  # pragma: no cover - allows direct script execution in backend/
+    from routers import onboarding, sessions, chat, pipeline
 
 app = FastAPI(title="clariq Backend")
 

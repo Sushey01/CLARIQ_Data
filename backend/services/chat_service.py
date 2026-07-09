@@ -12,14 +12,12 @@ import os
 import random
 import requests
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 # Add project root to path so we can import ai_engine modules
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
-
-from ai_engine.embeddings.search_vector_db import CurriculumSearchEngine
 
 # ---------------------------------------------------------------------------
 # Ollama configuration
@@ -42,13 +40,15 @@ MAX_HINTS = 3
 # ---------------------------------------------------------------------------
 # Lazy-loaded search engine singleton
 # ---------------------------------------------------------------------------
-_search_engine: Optional[CurriculumSearchEngine] = None
+_search_engine: Optional[Any] = None
 
 
-def _get_search_engine() -> CurriculumSearchEngine:
+def _get_search_engine() -> Any:
     """Lazy-load the search engine so model loading only happens on first call."""
     global _search_engine
     if _search_engine is None:
+        from ai_engine.embeddings.search_vector_db import CurriculumSearchEngine
+
         _search_engine = CurriculumSearchEngine()
     return _search_engine
 
@@ -60,6 +60,117 @@ def _check_ollama() -> bool:
         return resp.status_code == 200
     except Exception:
         return False
+
+
+def _get_installed_ollama_models() -> list[str]:
+    """Return the list of locally installed Ollama model tags."""
+    try:
+        resp = requests.get("http://localhost:11434/api/tags", timeout=3)
+        if resp.status_code != 200:
+            return []
+        data = resp.json()
+        models = []
+        for item in data.get("models", []):
+            name = item.get("name")
+            if name:
+                models.append(name)
+        return models
+    except Exception:
+        return []
+
+
+def _select_available_model(preferred_models: list[str]) -> str:
+    """Pick the first preferred model that exists locally, or the first preferred entry."""
+    installed = set(_get_installed_ollama_models())
+    for model_name in preferred_models:
+        if model_name in installed:
+            return model_name
+    return preferred_models[0] if preferred_models else OLLAMA_MODEL
+
+
+def _normalize_text(text: str) -> str:
+    return " ".join((text or "").lower().split())
+
+
+def _is_confused_message(message: str) -> bool:
+    normalized = _normalize_text(message)
+    if not normalized:
+        return False
+
+    confused_phrases = [
+        "i don't know",
+        "i do not know",
+        "idk",
+        "not sure",
+        "still confused",
+        "confused",
+        "no idea",
+        "help me",
+        "i am stuck",
+        "i'm stuck",
+    ]
+    return any(phrase in normalized for phrase in confused_phrases)
+
+
+def _is_full_answer_request(message: str) -> bool:
+    normalized = _normalize_text(message)
+    if not normalized:
+        return False
+
+    triggers = [
+        "make me understand",
+        "full explanation",
+        "explain fully",
+        "fully explain",
+        "give me the answer",
+        "tell me directly",
+        "answer directly",
+        "in your words",
+        "now explain",
+    ]
+    return any(trigger in normalized for trigger in triggers)
+
+
+def _split_previous_exchange(events: list[dict]) -> tuple[str, str]:
+    """Return the most recent student answer and tutor reply if available."""
+    last_student = ""
+    last_tutor = ""
+    for event in reversed(events):
+        role = event.get("role")
+        content = event.get("content", "")
+        if role == "student" and not last_student:
+            last_student = content
+        elif role == "tutor" and not last_tutor:
+            last_tutor = content
+        if last_student and last_tutor:
+            break
+    return last_student, last_tutor
+
+
+def _select_response_mode(session_id: str, message: str, events: list[dict]) -> str:
+    """Choose the tutoring mode for this turn.
+
+    Modes:
+    - socratic: start with a simple guiding question
+    - clarify: one stronger hint when the student seems unsure
+    - explain: direct explanation after repeated confusion or explicit request
+    """
+    depth = _hint_depth.get(session_id, 0)
+    if _is_full_answer_request(message):
+        return "explain"
+    if depth >= 2:
+        return "explain"
+
+    if _is_confused_message(message):
+        if depth >= 1:
+            return "explain"
+        return "clarify"
+
+    last_student, _ = _split_previous_exchange(events)
+    if last_student and _normalize_text(last_student) == _normalize_text(message):
+        return "clarify" if depth == 0 else "explain"
+
+    return "socratic"
 
 
 # ---------------------------------------------------------------------------
@@ -161,10 +272,11 @@ def _load_socratic_examples(limit: int = 3) -> str:
 
 def _call_ollama(prompt: str) -> tuple[Optional[str], Optional[str]]:
     """Send prompt to Ollama and return the generated text and the model used."""
-    models_to_try = [OLLAMA_MODEL]
-    for fallback_model in OLLAMA_FALLBACK_MODELS:
-        if fallback_model not in models_to_try:
-            models_to_try.append(fallback_model)
+    preferred_models = [OLLAMA_MODEL, *OLLAMA_FALLBACK_MODELS]
+    models_to_try = [_select_available_model(preferred_models)]
+    for model_name in preferred_models:
+        if model_name not in models_to_try:
+            models_to_try.append(model_name)
 
     for model_name in models_to_try:
         try:
@@ -212,8 +324,9 @@ def generate_socratic_response(
         dict with keys: reply, sources, hint_depth, model_used, fallback
     """
 
-    # 1. Track hint depth for this session
+    # 1. Track hint depth for this session and decide how much guidance to give.
     depth = _hint_depth.get(session_id, 0)
+    mode = _select_response_mode(session_id, message, events)
     global OLLAMA_MODEL
 
     # 2. Search curriculum for relevant context
@@ -235,10 +348,27 @@ def generate_socratic_response(
     ]
 
     # 3. Build the Socratic prompt
+    if mode == "socratic":
+        response_style = (
+            "Start with one simple Socratic question. "
+            "Use one short example from the curriculum, but do not repeat the same example more than once. "
+            "Do not explain the full answer yet."
+        )
+    elif mode == "clarify":
+        response_style = (
+            "Give one clearer hint and one concrete example. "
+            "If the student seems uncertain, move one step closer to the answer instead of asking the same type of question again."
+        )
+    else:
+        response_style = (
+            "Give the direct explanation in simple words, then add one short example and one checking question. "
+            "Do not keep the student in an endless question loop."
+        )
+
     system_prompt = SOCRATIC_SYSTEM_PROMPT.format(
         hint_depth=depth,
         max_hints=MAX_HINTS,
-    )
+    ) + f"\n\nCURRENT MODE: {mode.upper()}\nINSTRUCTIONS: {response_style}"
     history_text = _build_history_text(events)
 
     examples_text = _load_socratic_examples()
@@ -272,9 +402,14 @@ def generate_socratic_response(
             if used_model:
                 OLLAMA_MODEL = used_model
 
-    # 5. Increment hint depth (resets if student asks a new question)
+    # 5. Increment hint depth only while staying in Socratic/clarify mode.
     if not fallback:
-        _hint_depth[session_id] = depth + 1
+        if mode == "socratic":
+            _hint_depth[session_id] = min(depth + 1, MAX_HINTS)
+        elif mode == "clarify":
+            _hint_depth[session_id] = min(depth + 1, MAX_HINTS)
+        else:
+            _hint_depth[session_id] = MAX_HINTS
 
     return {
         "reply": reply,
@@ -282,6 +417,7 @@ def generate_socratic_response(
         "hint_depth": depth,
         "model_used": used_model or OLLAMA_MODEL,
         "fallback": fallback,
+        "mode": mode,
     }
 
 

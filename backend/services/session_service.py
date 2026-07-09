@@ -3,8 +3,8 @@ from uuid import uuid4
 
 from fastapi import HTTPException
 
-from models.session import Session, SessionEvent
-from repositories.session_repository import (
+from ..models.session import Session, SessionEvent
+from ..repositories.session_repository import (
     save_session,
     load_session,
     session_exists,

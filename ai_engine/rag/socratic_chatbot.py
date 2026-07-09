@@ -4,9 +4,10 @@ Uses the Socratic method: asking guiding questions to stimulate critical thinkin
 """
 
 import os
-import re
 import sys
 import time
+import re
+from datetime import datetime
 
 import requests
 
@@ -26,7 +27,6 @@ class SocraticRAG(InteractiveRAG):
         self.conversation_history = []
         self.question_depth = 0
         self.max_hints = 3
-        self.scaffold_attempts = {}
         print("📊 Socratic method enabled - Learning through questions!\n")
 
     def _check_ollama(self):
@@ -37,36 +37,40 @@ class SocraticRAG(InteractiveRAG):
         except Exception:
             return False
 
-    def _looks_stuck(self, student_answer):
-        """Return True when the student appears to be blocked and needs scaffolding."""
-        if not student_answer:
-            return True
+    def generate_socratic_prompt(self, question, context_docs):
+        """Create a friendly guiding question for the student."""
+        if not question:
+            return "What do you already understand about this topic, and what feels unclear?"
 
-        normalized = re.sub(r"\s+", " ", student_answer.strip().lower())
-        stuck_phrases = [
-            "i don't know",
-            "i do not know",
-            "idk",
-            "not sure",
-            "not sure yet",
-            "im stuck",
-            "i'm stuck",
-            "can't think",
-            "can't remember",
-            "no idea",
-            "help",
+        # Provide a short topic-aware example hint when possible
+        example_hint = self._get_topic_example_hint(question)
+
+        return (
+            f"I want to understand your thinking about '{question}'. "
+            f"{example_hint} "
+            "In your own words, what do you think the question is asking you to explain?"
+        )
+
+    def _get_topic_example_hint(self, question):
+        """Return a short topic-specific example hint when we can infer the topic."""
+        normalized_question = (question or "").lower()
+
+        example_map = [
+            ("photosynthesis", "For example, think about a plant using sunlight, water, and air to make food."),
+            ("force", "For example, think about pushing a door open or pulling a drawer."),
+            ("energy", "For example, think about food giving you energy or a battery lighting a torch."),
+            ("motion", "For example, think about a ball rolling or a bicycle moving forward."),
+            ("heredity", "For example, think about children sharing features with their parents."),
         ]
-        return any(phrase in normalized for phrase in stuck_phrases)
 
-    def _get_scaffold_attempt(self, question):
-        """Track how many times the same question has been scaffolded."""
-        key = (question or "").strip().lower()
-        current = self.scaffold_attempts.get(key, 0) + 1
-        self.scaffold_attempts[key] = current
-        return current
+        for keyword, hint in example_map:
+            if keyword in normalized_question:
+                return hint
+
+        return "For example, think of one simple situation from daily life that shows the same idea."
 
     def get_scaffolded_hint(self, question, student_answer, context_docs, attempt=1):
-        """Generate a progressive hint sequence for a student who is stuck."""
+        """Generate a progressive hint for a stuck student."""
         if not question:
             return "Think about what you learned in today's lesson. What do you already know that could help you start?"
 
@@ -93,18 +97,8 @@ class SocraticRAG(InteractiveRAG):
             "then try your best answer again."
         )
 
-    def generate_socratic_prompt(self, question, context_docs):
-        """Create a friendly guiding question for the student."""
-        if not question:
-            return "What do you already understand about this topic, and what feels unclear?"
-
-        return (
-            f"I want to understand your thinking about '{question}'. "
-            "In your own words, what do you think the question is asking you to explain?"
-        )
-
     def generate_followup_prompt(self, question, student_answer, context_docs, attempt=2):
-        """Generate the next Socratic question when the student needs more support."""
+        """Create the next Socratic question when more support is needed."""
         if not question:
             return self.generate_socratic_prompt(question, context_docs)
 
@@ -126,15 +120,80 @@ class SocraticRAG(InteractiveRAG):
             "What would change if this idea or object were not there?"
         )
 
+    def _is_answer_sufficient(self, question, student_answer, context_docs):
+        """Simple heuristic to decide if the student's answer shows understanding.
+
+        This is intentionally lightweight: keyword checks for common curriculum
+        topics and a small overlap heuristic against retrieved context.
+        """
+        if not student_answer:
+            return False
+
+        ans = student_answer.lower()
+        q = (question or "").lower()
+
+        keyword_map = {
+            "force": ["push", "pull", "force", "apply force"],
+            "photosynthesis": ["sunlight", "water", "carbon", "make food", "chlorophyll"],
+            "energy": ["energy", "battery", "food", "heat"],
+            "motion": ["move", "moving", "speed", "velocity", "accelerat"],
+        }
+
+        for topic, keys in keyword_map.items():
+            if topic in q:
+                for k in keys:
+                    if k in ans:
+                        return True
+
+        # Fallback: check overlap with context docs
+        import re
+        ctx = "\n\n".join(context_docs).lower()
+        ans_words = set(re.findall(r"\w{3,}", ans))
+        ctx_words = set(re.findall(r"\w{3,}", ctx))
+        if not ans_words or not ctx_words:
+            return False
+        overlap = ans_words & ctx_words
+        if len(overlap) >= 3:
+            return True
+
+        if len(ans_words) >= 6 and len(overlap) >= 2:
+            return True
+
+        return False
+
+    def _is_full_answer_request(self, query):
+        """Detect whether the user explicitly asked for a full explanation.
+
+        Matches common phrasings like 'explain', 'make me understand', 'fully',
+        or 'in your words'. This is intentionally permissive.
+        """
+        if not query:
+            return False
+        q = query.lower()
+        triggers = [
+            "make me understand",
+            "make me understand fully",
+            "explain fully",
+            "fully explain",
+            "in your words",
+            "explain",
+            "full explanation",
+            "now explain",
+        ]
+        return any(t in q for t in triggers)
+
     def generate_socratic_feedback(self, question, student_answer, context_docs):
         """Generate friendly feedback and a follow-up question based on the student's answer."""
-        if self._looks_stuck(student_answer):
-            attempt = self._get_scaffold_attempt(question)
-            return self.get_scaffolded_hint(question, student_answer, context_docs, attempt=attempt)
+        # If the student's answer already demonstrates understanding,
+        # return a short confirmation and stop further scaffolding.
+        if self._is_answer_sufficient(question, student_answer, context_docs):
+            return "✅ Good explanation — you understand the idea. <TOPIC_COMPLETE>"
 
         if not self.ollama_available:
-            attempt = self._get_scaffold_attempt(question)
-            return self.get_scaffolded_hint(question, student_answer, context_docs, attempt=attempt)
+            return (
+                "I appreciate your answer. Try to explain the main idea in simpler terms, "
+                "then ask yourself what part of it you are unsure about."
+            )
 
         context = "\n\n".join(context_docs)
         prompt = f"""You are a supportive, conversational Socratic tutor for a Grade 10 student.
@@ -172,11 +231,9 @@ RESPONSE:"""
                         except Exception:
                             pass
                 return answer.strip() or "I couldn't generate feedback right now. Try again."
-            attempt = self._get_scaffold_attempt(question)
-            return self.get_scaffolded_hint(question, student_answer, context_docs, attempt=attempt)
-        except Exception:
-            attempt = self._get_scaffold_attempt(question)
-            return self.get_scaffolded_hint(question, student_answer, context_docs, attempt=attempt)
+            return f"Ollama error: {response.status_code}"
+        except Exception as exc:
+            return f"Error generating feedback: {exc}"
 
     def interactive_chat(self):
         """Run an interactive Socratic tutoring loop."""
@@ -218,56 +275,47 @@ RESPONSE:"""
                     print("\n⚠️  No relevant context was found. Try a different question.\n")
                     continue
 
-                self.question_depth += 1
-                current_query = query
-                current_turn = 1
-
-                while True:
-                    if current_turn == 1:
-                        prompt = self.generate_socratic_prompt(current_query, context_docs)
+                # If the student explicitly asked for a full explanation, return the answer.
+                if self._is_full_answer_request(query):
+                    answer = self.generate_answer(query, context_docs)
+                    response_time = time.time() - start_time
+                    if answer:
+                        print("\n" + "=" * 75)
+                        print("✨ FULL EXPLANATION:\n")
+                        print(answer)
+                        print("\n" + "=" * 75 + "\n")
+                        self.log_interaction(query, answer, len(context_docs), response_time)
                     else:
-                        prompt = self.generate_followup_prompt(
-                            current_query,
-                            student_response,
-                            context_docs,
-                            attempt=current_turn,
-                        )
+                        print("\n⚠️  Could not generate a full explanation right now.\n")
+                    continue
 
-                    print("\n" + "=" * 75)
-                    print(f"🧠 SOCRATIC QUESTION (turn {current_turn}):\n")
-                    print(prompt)
-                    print("\n" + "=" * 75 + "\n")
+                self.question_depth += 1
+                prompt = self.generate_socratic_prompt(query, context_docs)
+                print("\n" + "=" * 75)
+                print("🧠 SOCRATIC QUESTION:\n")
+                print(prompt)
+                print("\n" + "=" * 75 + "\n")
 
-                    student_response = input("🧑 Your answer (type 'next' only when you want a new topic): ").strip()
-                    if not student_response:
-                        print("\n⚠️ Please type your answer so I can help you further.\n")
-                        continue
+                student_response = input("🧑 Your answer: ").strip()
+                if not student_response:
+                    print("\n⚠️ Please type your answer so I can help you further.\n")
+                    continue
 
-                    if student_response.lower() in {"quit", "exit"}:
-                        print("\n👋 Goodbye! Thanks for using the Socratic chatbot!")
-                        return
+                feedback = self.generate_socratic_feedback(query, student_response, context_docs)
+                # Handle topic-complete sentinel
+                completed = False
+                if "<TOPIC_COMPLETE>" in feedback:
+                    completed = True
+                    feedback = feedback.replace("<TOPIC_COMPLETE>", "").strip()
 
-                    if student_response.lower() in {"next", "skip", "new topic"}:
-                        print("\n➡️ Moving to the next question.\n")
-                        break
+                print("\n" + "=" * 75)
+                print("💬 Tutor Feedback:\n")
+                print(feedback)
+                if completed:
+                    print("\n➡️ Topic complete — moving to the next question.\n")
+                print("\n" + "=" * 75 + "\n")
 
-                    feedback = self.generate_socratic_feedback(current_query, student_response, context_docs)
-                    print("\n" + "=" * 75)
-                    print("💬 Tutor Feedback:\n")
-                    print(feedback)
-                    print("\n" + "=" * 75 + "\n")
-
-                    self.conversation_history.append(
-                        {
-                            "question": current_query,
-                            "answer": student_response,
-                            "feedback": feedback,
-                            "turn": current_turn,
-                        }
-                    )
-                    self.log_interaction(current_query, feedback, len(context_docs), time.time() - start_time)
-
-                    current_turn += 1
+                self.log_interaction(query, feedback, len(context_docs), time.time() - start_time)
 
             except KeyboardInterrupt:
                 print("\n\n👋 Goodbye!")
@@ -279,7 +327,7 @@ RESPONSE:"""
 if __name__ == "__main__":
     import sys
 
-    model_name = sys.argv[1] if len(sys.argv) > 1 else "phi:latest"
+    model_name = sys.argv[1] if len(sys.argv) > 1 else "mistral"
     student_id = sys.argv[2] if len(sys.argv) > 2 else "anonymous"
 
     try:

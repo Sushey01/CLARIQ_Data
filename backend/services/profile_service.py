@@ -3,8 +3,8 @@ from uuid import uuid4
 
 from fastapi import HTTPException
 
-from models.profile import StudentProfile, StudentProfileUpdate
-from repositories.profile_repository import (
+from ..models.profile import StudentProfile, StudentProfileUpdate
+from ..repositories.profile_repository import (
     load_profile,
     profile_exists,
     save_profile,

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Dict, Optional
 from pathlib import Path
 import shutil
-from services.pipeline_service import run_ingestion_pipeline, PROJECT_ROOT
+from ..services.pipeline_service import run_ingestion_pipeline, PROJECT_ROOT
 
 router = APIRouter(prefix="/pipeline", tags=["pipeline"])
 

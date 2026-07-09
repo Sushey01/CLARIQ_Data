@@ -2,7 +2,7 @@ from pathlib import Path
 import json
 from typing import List
 
-from models.profile import StudentProfile
+from ..models.profile import StudentProfile
 
 STORAGE = Path("data/student_profiles")
 STORAGE.mkdir(parents=True, exist_ok=True)

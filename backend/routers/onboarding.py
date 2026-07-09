@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from typing import List
 
-from models.profile import StudentProfile, StudentProfileUpdate
-from services.profile_service import (
+from ..models.profile import StudentProfile, StudentProfileUpdate
+from ..services.profile_service import (
     create_profile as create_profile_service,
     get_profile as get_profile_service,
     update_profile as update_profile_service,
